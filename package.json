@@ -11,11 +11,13 @@
   "author": "4ctarus",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "debug": "^4.1.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-rate-limit": "^3.3.2",
     "helmet": "^3.15.0",
+    "multer": "^1.4.1",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^3.6.0"
   },
