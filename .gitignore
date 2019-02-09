@@ -1,7 +1,6 @@
 # dependencies
 /node_modules
-.vscode/launch.json
-mongo/
+/.vscode
 
 .env
 
@@ -13,6 +12,3 @@ mongo/
 
 # compiled output
 dist/*
-
-# exception to the rule
-!dist/.gitkeep 

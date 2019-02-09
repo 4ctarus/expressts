@@ -3,8 +3,12 @@ dotenv.config();
 
 let config;
 export default config = {
-  env: (process.env.PROD !== '1' && process.env.PROD !== 'true') ? 'development' : 'production',
+  env: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   port: process.env.PORT,
+
+  db: {
+    mongodb: 'mongodb://localhost/expressts'
+  },
 
   limiter: {
     ms: 15 * 60 * 1000, // 15 minutes

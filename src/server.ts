@@ -2,8 +2,9 @@ import config from './config/config';
 import express from 'express';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 
-import logger from './utils/logger'
+import logger from './utils/logger';
 import { Limiter } from './utils/limiter';
 import { BaseController } from './controllers/base.controller';
 import { LoginController } from './controllers/login.controller';
@@ -37,5 +38,30 @@ app.use((err: Error, req: express.Request, res: express.Response, next) => {
   });
   res.status(500).json({msg: 'internal_server_error'});
 });
+// --------------------------------- db connection
+mongoose.set('debug', true);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false)
+mongoose.Promise = global.Promise;
+const connection = mongoose.connect(config.db.mongodb, {
+  useNewUrlParser: true
+});
+
+connection
+  .then(db => {
+    logger.info(`Successfully connected to ${config.db.mongodb} MongoDB cluster in ${config.env} mode.`);
+    return db;
+  })
+  .catch(err => {
+    if (err.message.code === 'ETIMEDOUT') {
+      logger.info('Attempting to re-establish database connection.');
+      mongoose.connect(config.db.mongodb, {
+        useNewUrlParser: true
+      });
+    } else {
+      logger.error('Error while attempting to connect to database.');
+      logger.error(err);
+    }
+  });
 // --------------------------------- port listen
 app.listen(config.port, () => logger.info(`Server running on port:${config.port}`));
