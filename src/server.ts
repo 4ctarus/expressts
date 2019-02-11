@@ -3,10 +3,10 @@ import express from 'express';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import eJwt from 'express-jwt';
 
 import logger from './utils/logger';
 import { Limiter } from './utils/limiter';
-import { BaseController } from './controllers/base.controller';
 import { LoginController } from './controllers/login.controller';
 import { RegisterController } from './controllers/register.controller';
 
@@ -15,10 +15,20 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(helmet());
 // --------------------------------- route limiter
-app.use('/', Limiter.getLimiter())
+app.use('/', Limiter.getLimiter());
 // --------------------------------- route
+const auth = eJwt({
+  secret: config.cert.public,
+  requestProperty: 'jwt'
+});
+const auth_route = {
+  get: auth,
+  post: auth,
+  put: auth,
+  delete: auth
+}
 new LoginController(app.route('/auth/login'));
-new RegisterController(app.route('/auth/register'));
+new RegisterController(app.route('/auth/register'), auth_route);
 
 app.all('*', function(req, res, next){
   res.status(404).json({});

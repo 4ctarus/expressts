@@ -1,3 +1,4 @@
+import fs from 'fs';
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -13,5 +14,10 @@ export default config = {
   limiter: {
     ms: 15 * 60 * 1000, // 15 minutes
     max: 10,
+  },
+
+  cert: {
+    public: fs.readFileSync('public_key.pem'),
+    private: fs.readFileSync('private_key.pem')
   }
 }

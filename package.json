@@ -4,6 +4,7 @@
   "description": "node server in ts",
   "main": "src/server.ts",
   "scripts": {
+    "key": "openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in private_key.pem -out public_key.pem",
     "build": "tsc --watch",
     "dev": "nodemon",
     "devjs": "tsc && node dist/server.js"
@@ -15,6 +16,7 @@
     "debug": "^4.1.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
     "express-rate-limit": "^3.3.2",
     "helmet": "^3.15.0",
     "jsonwebtoken": "^8.4.0",
@@ -27,6 +29,7 @@
     "@types/debug": "^0.0.31",
     "@types/dotenv": "^6.1.0",
     "@types/express": "^4.16.1",
+    "@types/express-jwt": "^0.0.41",
     "@types/express-rate-limit": "^3.3.0",
     "@types/helmet": "^0.0.42",
     "@types/jsonwebtoken": "^8.3.0",
