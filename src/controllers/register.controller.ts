@@ -8,7 +8,7 @@ import User, { UserDocument } from '../models/user.model';
 export class RegisterController extends BaseController {
 
   post(req: express.Request, res: express.Response, next) {
-    logger.debug(`[POST:${this.TAG}]`, req.body);
+    logger.debug(`[POST:${this.TAG}]`);
 
     const body = req.body || {};
     let lang = 'en';

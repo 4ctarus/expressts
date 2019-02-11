@@ -10,7 +10,7 @@ import config from '../config/config';
 export class LoginController extends BaseController {
 
   post(req: express.Request, res: express.Response, next) {
-    logger.debug(`[POST:${this.TAG}]`, req.body);
+    logger.debug(`[POST:${this.TAG}]`);
 
     const body = req.body || {};
 
