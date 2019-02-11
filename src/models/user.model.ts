@@ -1,8 +1,19 @@
-import { Schema, model } from 'mongoose';
-import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
+import { Schema, model, Document, Model } from 'mongoose';
 
-const UserSchema = new Schema({
+export interface UserDocument extends Document {
+  email: string;
+  username: string;
+  password: string;
+  salt: string;
+  lastname: string;
+  firstname: string;
+  birthdate: string;
+  lang: string;
+  recoveryCode: string;
+  active: string;
+}
+
+const _shema = new Schema({
   email: {
     type: String,
     lowercase: true,
@@ -10,7 +21,7 @@ const UserSchema = new Schema({
     index: true,
     unique: true,
     required: true,
-    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'email_invalid']
+    match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   },
   username: {
     type: String,
@@ -19,7 +30,7 @@ const UserSchema = new Schema({
     index: true,
     unique: true,
     required: true,
-    match: [/^[0-9a-z]+$/, 'username_invalid'] // is alpha-numeric
+    match: /^[0-9a-z]+$/ // is alpha-numeric
   },
   password: {
     type: String,
@@ -37,6 +48,10 @@ const UserSchema = new Schema({
   firstname: {
     type: String,
     trim: true,
+    required: true
+  },
+  birthdate: {
+    type: Date,
     required: true
   },
   lang: {
@@ -61,35 +76,15 @@ const UserSchema = new Schema({
     timestamps: true
   });
 
-UserSchema.pre('find', function () {
+_shema.pre('find', function () {
   this.where({
     active: true
   });
 });
-UserSchema.pre('findOne', function () {
+_shema.pre('findOne', function () {
   this.where({
     active: true
   });
 });
 
-UserSchema.methods.setPassword = function (password) {
-  this.salt = crypto.randomBytes(16).toString('hex');
-  this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-};
-
-UserSchema.methods.validatePassword = function (password) {
-  const hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
-  return this.hash === hash;
-};
-
-UserSchema.methods.generateJWT = function () {
-  return jwt.sign({
-    sub: this._id,
-    admin: false
-  }, 'secret', {
-      algorithm: 'RS256',
-      expiresIn: '2d'
-    });
-}
-
-export default model('User', UserSchema);
+export default model<UserDocument>('User', _shema);

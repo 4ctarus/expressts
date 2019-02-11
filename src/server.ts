@@ -9,6 +9,7 @@ import logger from './utils/logger';
 import { Limiter } from './utils/limiter';
 import { LoginController } from './controllers/login.controller';
 import { RegisterController } from './controllers/register.controller';
+import { UserController } from './controllers/user.controller';
 
 const app = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -28,10 +29,11 @@ const auth_route = {
   delete: auth
 }
 new LoginController(app.route('/auth/login'));
-new RegisterController(app.route('/auth/register'), auth_route);
+new RegisterController(app.route('/auth/register'));
+new UserController(app.route('/user'), auth_route);
 
-app.all('*', function(req, res, next){
-  res.status(404).json({});
+app.all('*', function (req, res, next) {
+  res.status(404).json({ msg: 'not_found' });
 });
 // --------------------------------- error handler
 app.use((err: Error, req: express.Request, res: express.Response, next) => {
@@ -46,10 +48,26 @@ app.use((err: Error, req: express.Request, res: express.Response, next) => {
     headers: req.headers,
     err: err
   });
-  res.status(500).json({msg: 'internal_server_error'});
+  switch (err.name) {
+    case 'UnauthorizedError':
+      res.status(401).json({ msg: 'invalid_token' });
+      break;
+
+    case 'ValidationError':
+      res.status(400).json({ msg: 'bad_request', err: err.message });
+      break;
+
+    case 'MongoError':
+      res.status(400).json({ msg: 'bad_request', err: err.message.split(' error')[0].replace(/E\S+\s/gm, '').replace(/\s/gm, '_') });
+      break;
+
+    default:
+      res.status(500).json({ msg: 'internal_server_error' });
+      break;
+  }
 });
 // --------------------------------- db connection
-mongoose.set('debug', true);
+//mongoose.set('debug', true);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false)
 mongoose.Promise = global.Promise;
