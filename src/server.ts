@@ -32,6 +32,10 @@ new LoginController(app.route('/auth/login'));
 new RegisterController(app.route('/auth/register'));
 new UserController(app.route('/user'), auth_route);
 
+app.get('/routes', function (req, res, next) {
+  res.json(req.app._router.stack.filter(r => r.route).map(r => r.route.path));
+});
+
 app.all('*', function (req, res, next) {
   res.status(404).json({ msg: 'not_found' });
 });

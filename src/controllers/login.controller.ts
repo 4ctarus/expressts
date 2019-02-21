@@ -1,4 +1,3 @@
-import express from 'express';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
@@ -9,7 +8,7 @@ import config from '../config/config';
 
 export class LoginController extends BaseController {
 
-  post(req: express.Request, res: express.Response, next) {
+  post(req, res, next) {
     logger.debug(`[POST:${this.TAG}]`);
 
     const body = req.body || {};
