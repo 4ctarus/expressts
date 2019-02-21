@@ -10,6 +10,7 @@ import { Limiter } from './utils/limiter';
 import { LoginController } from './controllers/login.controller';
 import { RegisterController } from './controllers/register.controller';
 import { UserController } from './controllers/user.controller';
+import { RoleController } from './controllers/role.controller';
 
 const app = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -31,6 +32,7 @@ const auth_route = {
 new LoginController(app.route('/auth/login'));
 new RegisterController(app.route('/auth/register'));
 new UserController(app.route('/user'), auth_route);
+new RoleController(app.route('/role'), auth_route);
 
 app.get('/routes', function (req, res, next) {
   res.json(req.app._router.stack.filter(r => r.route).map(r => r.route.path));
