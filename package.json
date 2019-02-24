@@ -4,7 +4,7 @@
   "description": "node server in ts",
   "main": "src/server.ts",
   "scripts": {
-    "key": "openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in private_key.pem -out public_key.pem",
+    "init": "openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in private_key.pem -out public_key.pem",
     "build": "tsc --watch",
     "dev": "nodemon",
     "devjs": "tsc && node dist/server.js"
@@ -36,7 +36,9 @@
     "@types/mongodb": "^3.1.19",
     "@types/mongoose": "^5.3.12",
     "@types/winston": "^2.4.4",
+    "migrate": "^1.6.2",
     "nodemon": "^1.18.9",
+    "ts-node": "^8.0.2",
     "typescript": "^3.3.1"
   }
 }

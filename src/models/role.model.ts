@@ -2,8 +2,24 @@ import { Schema, model, Document, Model } from 'mongoose';
 
 export interface RoleDocument extends Document {
   name: string;
-  paths: string[]; // disabled path
+  paths?: string[]; // disabled path
 }
+
+const _url = new Schema(
+  {
+    name: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      unique: true,
+      required: true
+    },
+    method: [{
+      type: String,
+      enum: ['get', 'post', 'put', 'delete']
+    }]
+  }
+);
 
 const _shema = new Schema({
   name: {
@@ -15,9 +31,10 @@ const _shema = new Schema({
     required: true,
     match: /^[0-9a-z]+$/ // is alpha-numeric
   },
-  paths: {
-    type: [String],
-    required: true
+  url: {
+    type: [_url],
+    required: true,
+    default: []
   }
 }, {
     collection: 'roles',
