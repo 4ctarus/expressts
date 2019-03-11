@@ -1,19 +1,29 @@
-import { Schema, model, Document, Model } from 'mongoose';
+import { Schema, model, Document, Model, Types } from 'mongoose';
+import logger from '../utils/logger';
+import roleModel from './role.model';
+import config from '../config/config';
 
 export interface UserDocument extends Document {
+  _id_role: string | Types.ObjectId;
   email: string;
   username: string;
   password: string;
   salt: string;
   lastname: string;
   firstname: string;
-  birthdate: string;
-  lang: string;
-  recoveryCode: string;
-  active: string;
+  birthdate: Date | string;
+  lang?: string;
+  recoveryCode?: string;
+  active: boolean;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
 }
 
 const _shema = new Schema({
+  _id_role: {
+    type: Types.ObjectId,
+    ref: 'roles'
+  },
   email: {
     type: String,
     lowercase: true,
@@ -76,6 +86,19 @@ const _shema = new Schema({
     timestamps: true
   });
 
+_shema.pre('save', function (next) {
+  if (this.isNew) {
+    logger.debug('new user');
+
+    roleModel.findOne({ name: config.user.default_role }).then(res => {
+      if (res) {
+        (<UserDocument>this)._id_role = res._id;
+      }
+    }).then(res => {
+      next();
+    })
+  }
+});
 _shema.pre('find', function () {
   this.where({
     active: true

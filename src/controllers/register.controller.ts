@@ -20,7 +20,7 @@ export class RegisterController extends BaseController {
       lang: lang,
       birthdate: new Date(body.birthdate)
     });
-    this.setPassword(user);
+    RegisterController.setPassword(user);
     User.create(user)
       .then(user => {
         res.status(201).json({});
@@ -30,8 +30,9 @@ export class RegisterController extends BaseController {
       });
   }
 
-  setPassword(user: UserDocument) {
+  static setPassword(user: UserDocument) {
     user.salt = crypto.randomBytes(16).toString('hex');
     user.password = crypto.pbkdf2Sync(user.password, user.salt, 10000, 512, 'sha512').toString('hex');
+    return user;
   };
 }

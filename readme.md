@@ -13,7 +13,7 @@ DEBUG=app:*
 
 ## Install
 1. `yarn install`
-2. `yarn run key`
+2. `yarn run init`
 
 ## Launch
 `yarn run dev`

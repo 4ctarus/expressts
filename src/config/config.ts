@@ -8,7 +8,7 @@ export default config = {
   port: process.env.PORT || '3000',
 
   db: {
-    mongodb: 'mongodb://localhost/expressts'
+    mongodb: 'mongodb://localhost:27017/expressts'
   },
 
   limiter: {
@@ -19,5 +19,9 @@ export default config = {
   cert: {
     public: fs.readFileSync('public_key.pem'),
     private: fs.readFileSync('private_key.pem')
+  },
+
+  user: {
+    default_role: 'user'
   }
 }

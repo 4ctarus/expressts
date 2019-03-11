@@ -4,7 +4,7 @@
   "description": "node server in ts",
   "main": "src/server.ts",
   "scripts": {
-    "init": "openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in private_key.pem -out public_key.pem",
+    "init": "ts-node ./migrations/add-main-roles.ts && openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in private_key.pem -out public_key.pem",
     "build": "tsc --watch",
     "dev": "nodemon",
     "devjs": "tsc && node dist/server.js"
@@ -22,7 +22,6 @@
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.10",
     "multer": "^1.4.1",
-    "winston": "^3.2.1",
     "winston-daily-rotate-file": "^3.6.0"
   },
   "devDependencies": {
@@ -35,7 +34,6 @@
     "@types/jsonwebtoken": "^8.3.0",
     "@types/mongodb": "^3.1.19",
     "@types/mongoose": "^5.3.12",
-    "@types/winston": "^2.4.4",
     "migrate": "^1.6.2",
     "nodemon": "^1.18.9",
     "ts-node": "^8.0.2",
