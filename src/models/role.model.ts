@@ -7,7 +7,7 @@ export interface RoleDocument extends Document {
 
 const _url = new Schema(
   {
-    name: {
+    url: {
       type: String,
       lowercase: true,
       trim: true,
@@ -31,7 +31,7 @@ const _shema = new Schema({
     required: true,
     match: /^[0-9a-z]+$/ // is alpha-numeric
   },
-  url: {
+  paths: { // banned url
     type: [_url],
     required: true,
     default: []

@@ -11,6 +11,7 @@ import { LoginController } from './controllers/login.controller';
 import { RegisterController } from './controllers/register.controller';
 import { UserController } from './controllers/user.controller';
 import { RoleController } from './controllers/role.controller';
+import { RolesController } from './controllers/roles.component';
 
 const app = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -29,20 +30,32 @@ const auth_route = {
   put: auth,
   delete: auth
 }
+app.use((req, res, next) => {
+  // middleware of authorization
+  /**
+   * middleware of Authorization
+   * 1: On launch save role into cahe (on save update cache)
+   * 2: On login save role user in cache (on save update cache)
+   * 3: check if user role as access to the link
+   */
+  next();
+});
+
 new LoginController(app.route('/auth/login'));
 new RegisterController(app.route('/auth/register'));
 new UserController(app.route('/user'), auth_route);
-new RoleController(app.route('/role'), auth_route);
+new RolesController(app.route(['/role', '/roles']), auth_route);
+new RoleController(app.route('/role/:id'), auth_route);
 
 app.get('/routes', function (req, res, next) {
   res.json(req.app._router.stack.filter(r => r.route).map(r => r.route.path));
 });
 
 app.all('*', function (req, res, next) {
-  res.status(404).json({ msg: 'not_found' });
+  res.status(404).json({ err: 'not_found' });
 });
 // --------------------------------- error handler
-app.use((err: Error, req: express.Request, res: express.Response, next) => {
+app.use((err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
   }
@@ -56,19 +69,19 @@ app.use((err: Error, req: express.Request, res: express.Response, next) => {
   });
   switch (err.name) {
     case 'UnauthorizedError':
-      res.status(401).json({ msg: 'invalid_token' });
+      res.status(401).json({ err: 'invalid_token' });
       break;
 
     case 'ValidationError':
-      res.status(400).json({ msg: 'bad_request', err: err.message });
+      res.status(400).json({ err: err.message });
       break;
 
     case 'MongoError':
-      res.status(400).json({ msg: 'bad_request', err: err.message.split(' error')[0].replace(/E\S+\s/gm, '').replace(/\s/gm, '_') });
+      res.status(400).json({ err: err.message.split(' error')[0].replace(/E\S+\s/gm, '').replace(/\s/gm, '_') });
       break;
 
     default:
-      res.status(500).json({ msg: 'internal_server_error' });
+      res.status(500).json({});
       break;
   }
 });

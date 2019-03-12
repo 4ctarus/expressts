@@ -14,11 +14,11 @@ export class LoginController extends BaseController {
     const body = req.body || {};
 
     if (!body.login) {
-      return res.status(422).json({ msg: 'login_required' });
+      return res.status(422).json({ err: 'login_required' });
     }
 
     if (!body.password) {
-      return res.status(422).json({ msg: 'password_required' });
+      return res.status(422).json({ err: 'password_required' });
     }
 
     User.findOne({
@@ -29,7 +29,7 @@ export class LoginController extends BaseController {
     })
       .then(user => {
         if (!user) {
-          return res.status(404).json({ msg: 'not_found' });
+          return res.status(404).json({ err: 'not_found' });
         }
         if (this.validatePassword(body.password, user)) {
           res.json({
@@ -44,7 +44,7 @@ export class LoginController extends BaseController {
             }
           });
         } else {
-          res.status(400).json({ msg: 'bad_request' });
+          res.status(400).json({ err: 'bad_request' });
         }
       })
       .catch(err => {

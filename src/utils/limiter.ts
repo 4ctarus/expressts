@@ -9,7 +9,7 @@ export class Limiter {
       max: config.limiter.max,
       handler: function (req, res, /*next*/) {
         logger.debug(`[LIMITER] ${req.method}:${req.path}`);
-        res.status(429).json({msg: 'too_many_requests'});
+        res.status(429).json({ err: 'too_many_requests' });
       }
     }
     limit = { ...limit, ...data };
